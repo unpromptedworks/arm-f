@@ -1,6 +1,6 @@
 // Build: weave every page ahead of time into dist/. No dependencies.
 import { mkdirSync, rmSync, writeFileSync, cpSync, existsSync } from "node:fs";
-import { weave, yarn, STRUCTURES } from "./static/js/weave.js";
+import { weave, spin, STRUCTURES } from "./static/js/weave.js";
 import { PIECES, DYES } from "./src/pieces.mjs";
 
 const SITE = "The Back of the Cloth";
@@ -44,7 +44,8 @@ ${script}
 
 function dyeVars(p) {
   const [a, b] = p.dyes.map((d) => DYES[d]);
-  return `--W:${p.W};--a:${a.bg};--af:${a.fg};--b:${b.bg};--bf:${b.fg}`;
+  const cell = p.cell ? `;--cell:${p.cell}rem` : "";
+  return `--W:${p.W};--a:${a.bg};--af:${a.fg};--b:${b.bg};--bf:${b.fg}${cell}`;
 }
 
 function cloth(p, structure = p.structure, attrs = "") {
@@ -52,6 +53,18 @@ function cloth(p, structure = p.structure, attrs = "") {
     .map((c) => (c.warp ? `<i>${esc(c.ch)}</i>` : `<i class="f">${esc(c.ch)}</i>`))
     .join("");
   return `<div class="cloth" style="${dyeVars(p)}"${attrs}>${cells}</div>`;
+}
+
+// The two texts unwoven. A text written to the grid is listed thread by
+// thread and folded away, so the cloth is read first.
+function yarns(p, a, b) {
+  const text = (t) =>
+    Array.isArray(t) ? `<ol>${t.map((l) => `<li>${esc(l)}</li>`).join("")}</ol>` : `<p>${esc(t.replace(/\s+/g, " ").trim())}</p>`;
+  const inner = `<section class="yarns">
+<div><h2><span class="chip" style="background:${a.bg}"></span>Warp, in ${a.name}: ${esc(p.warpLabel)}</h2>${text(p.warp)}</div>
+<div><h2><span class="chip" style="background:${b.bg}"></span>Weft, in ${b.name}: ${esc(p.weftLabel)}</h2>${text(p.weft)}</div>
+</section>`;
+  return Array.isArray(p.warp) ? `<details class="unwoven"><summary>Unweave it: both texts, thread by thread</summary>${inner}</details>` : inner;
 }
 
 function piecePage(p, n) {
@@ -74,10 +87,7 @@ ${cloth(p, p.structure, ' aria-label="The woven cloth: two texts crossed. Both t
 </div>
 <div class="controls" role="group" aria-label="Structure">${buttons}<button type="button" class="turn" aria-pressed="false">Turn it over</button></div>
 <p class="note about" aria-live="polite">${esc(STRUCTURES[p.structure].note)}</p>
-<section class="yarns">
-<div><h2><span class="chip" style="background:${a.bg}"></span>Warp, in ${a.name}: ${esc(p.warpLabel)}</h2><p>${esc(p.warp.replace(/\s+/g, " ").trim())}</p></div>
-<div><h2><span class="chip" style="background:${b.bg}"></span>Weft, in ${b.name}: ${esc(p.weftLabel)}</h2><p>${esc(p.weft.replace(/\s+/g, " ").trim())}</p></div>
-</section>
+${yarns(p, a, b)}
 <section class="after"><h2>On the structure</h2><p>${esc(p.afterword)}</p></section>
 <p class="selvage" style="border:0;margin-top:2rem">${prev ? `<a href="/pieces/${prev.slug}/">← ${esc(prev.title)}</a>` : "<span></span>"}${next ? `<a href="/pieces/${next.slug}/">${esc(next.title)} →</a>` : "<span></span>"}</p>
 </main>`;
@@ -168,7 +178,9 @@ function favicon() {
 for (const p of PIECES) {
   if (!STRUCTURES[p.structure]) throw new Error(`${p.slug}: unknown structure ${p.structure}`);
   for (const d of p.dyes) if (!DYES[d]) throw new Error(`${p.slug}: unknown dye ${d}`);
-  if (!yarn(p.warp).trim() || !yarn(p.weft).trim()) throw new Error(`${p.slug}: empty yarn`);
+  if (!spin(p, "warp").trim() || !spin(p, "weft").trim()) throw new Error(`${p.slug}: empty yarn`);
+  if (Array.isArray(p.warp) && p.warp.length !== p.W) throw new Error(`${p.slug}: ${p.warp.length} warp lines for ${p.W} threads`);
+  if (Array.isArray(p.weft) && p.weft.length !== p.H) throw new Error(`${p.slug}: ${p.weft.length} weft lines for ${p.H} picks`);
   weave(p, p.structure);
 }
 

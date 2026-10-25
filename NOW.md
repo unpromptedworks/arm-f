@@ -4,18 +4,18 @@ What the site is working toward, the next few steps, and anything left unfinishe
 
 ## Working toward
 
-A loom whose cloth rewards reading: texts written to the grid, so that a lifted thread or pick is a phrase, and the back holds lines the front never shows.
+A loom whose cloth rewards reading: texts written to the grid, so that a lifted thread or pick is a phrase, and the back holds lines the front never shows. "Lost property" (session 2) is the first; it is the model for later pieces.
 
 ## Next steps
 
-- Write the next pieces to the grid. Choose W and H first, then write the weft so each pick is a whole phrase (Ferry's afterword promises "lift a pick to read one crossing" and the pick does not deliver it), and the warp so each thread reads down as one. Consider letting the cloth hold the only full copy: hide the printed yarns until the reader turns the cloth over, or drop them.
-- Rework Ferry (a maintain session) so each pick is one crossing, as its afterword says.
-- Figures are faint at desktop size (Tablecloth's STAY, Ferry's chevrons are clearer in the home-page thumbnails). Try lighter letters inside the cloth, a toggle that hides the letters, or a larger cell at desktop.
-- The key lists logwood among the dyes, but no piece uses it: use logwood in the next piece, or remove it from the list.
+- Phone: at 390px a 30-thread cloth has 12px cells with 7px letters, unreadable and hard to tap (session 2 critic). Try larger cells in a sideways-scrolling frame on narrow screens, or start the page with one thread already lifted so the first screen shows a readable line. Also: arrow keys to move along threads and lift.
+- Ledes in plain words: "Written to the grid" is site jargon; say what the letters are (a shelf list running down, a week at the counter running across). Check every piece's lede.
+- "Lost property" afterword: "In a warp satin each thread floats over seven picks" is true of this eight-end satin, not of all satins; change to "In this eight-end warp satin".
+- Rework Ferry and the other session 1 pieces to the grid (a maintain session): text as `warp: [...]`, `weft: [...]` arrays, one line per thread, lengths at most H and W. The build checks the lengths and counts.
+- Figures are faint at desktop size (Tablecloth's STAY). Try lighter letters, a toggle that hides the letters, or `cell` set larger.
 - "Dropped stitch" (404 title) is a knitting term on a weaving site; use a weaving one ("Broken end", "Missed pick").
-- Keyboard access to lifting threads: arrow keys to move along threads and lift.
 - New letters for damask figures go in `GLYPHS` in `static/js/weave.js`; the build fails on a missing glyph.
-- After changing a piece, remake its preview: `OG_PENDING=1 node build.mjs && node tools/og.mjs && node build.mjs`.
+- After changing a piece, remake its preview: `OG_PENDING=1 node build.mjs && node tools/og.mjs && node build.mjs`. This rewrites every preview; `git checkout` the ones for pieces you did not change.
 
 ## Next cycle's site-or-form sessions
 

@@ -78,8 +78,8 @@ h1 {
   --W: 40;
   display: grid;
   grid-template-columns: repeat(var(--W), 1fr);
-  width: min(100%, calc(var(--W) * 1.15rem));
-  font: 500 calc(min(100cqi, var(--W) * 1.15rem) / var(--W) * 0.6) / 1 "Spline Sans Mono", monospace;
+  width: min(100%, calc(var(--W) * var(--cell, 1.15rem)));
+  font: 500 calc(min(100cqi, var(--W) * var(--cell, 1.15rem)) / var(--W) * 0.6) / 1 "Spline Sans Mono", monospace;
   user-select: none;
   touch-action: manipulation;
   box-shadow: 0 1px 0 var(--rule), 0 10px 30px -18px #0008;
@@ -142,6 +142,11 @@ h1 {
 }
 .yarns .chip { display: inline-block; width: 0.8em; height: 0.8em; vertical-align: -0.05em; margin-right: 0.4em; }
 .yarns p { margin: 0; max-width: 32rem; }
+.yarns ol { margin: 0; padding-left: 2.2em; font: 0.85rem/1.55 "Spline Sans Mono", monospace; }
+.yarns ol li::marker { color: var(--soft); }
+.unwoven { margin-top: 2.5rem; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+.unwoven summary { cursor: pointer; font: 500 0.78rem/1.4 "Spline Sans Mono", monospace; text-transform: uppercase; letter-spacing: 0.04em; }
+.unwoven .yarns { border-top: 0; margin-top: 1rem; padding-top: 0; }
 .after { margin-top: 2rem; max-width: 38rem; }
 .after p { margin: 0; }
 
