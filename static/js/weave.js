@@ -8,6 +8,22 @@ export function yarn(text) {
   return text.toUpperCase().replace(/\s+/g, " ").trim() + " ";
 }
 
+// A text written to the grid is an array of lines: one per warp thread (each
+// at most H characters) or one per weft pick (at most W), padded with spaces
+// so that every thread carries exactly one line.
+export function spin(p, kind) {
+  const text = kind === "warp" ? p.warp : p.weft;
+  if (!Array.isArray(text)) return yarn(text);
+  const n = kind === "warp" ? p.H : p.W;
+  return text
+    .map((line) => {
+      const l = line.toUpperCase();
+      if (l.length > n) throw new Error(`${kind} line longer than ${n}: ${line}`);
+      return l.padEnd(n, " ");
+    })
+    .join("");
+}
+
 // Warp threads run down: thread c carries characters c*H .. c*H+H-1 of the
 // warp yarn, wound round again when the yarn runs out.
 export function warpChar(w, H, r, c) {
@@ -101,8 +117,8 @@ export const STRUCTURES = {
 // structure is inverted: every crossing that shows warp on the front shows
 // weft behind. (The back is drawn as if seen in a mirror, so it reads.)
 export function weave(p, structure, back = false) {
-  const w = yarn(p.warp);
-  const f = yarn(p.weft);
+  const w = spin(p, "warp");
+  const f = spin(p, "weft");
   const up = STRUCTURES[structure].up(p);
   const cells = [];
   for (let r = 0; r < p.H; r++) {
@@ -119,8 +135,8 @@ export function weave(p, structure, back = false) {
 
 // Everything a thread carries, and which of its characters are on top.
 export function thread(p, structure, back, kind, i) {
-  const w = yarn(p.warp);
-  const f = yarn(p.weft);
+  const w = spin(p, "warp");
+  const f = spin(p, "weft");
   const up = STRUCTURES[structure].up(p);
   const out = [];
   const n = kind === "warp" ? p.H : p.W;

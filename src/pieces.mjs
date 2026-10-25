@@ -1,7 +1,8 @@
 // The pieces, newest last. Each crosses a warp text (what stays: set up
 // first, held under tension) with a weft text (what passes through).
-// W and H are the cloth's threads and picks; dyes are named for the plants
-// and insects that gave them.
+// W and H are the cloth's threads and picks; cell, if given, is the largest
+// crossing in rem (a cloth written to be read is set larger). Dyes are named
+// for the plants and insects that gave them.
 
 export const DYES = {
   indigo: { name: "indigo", bg: "#25356a", fg: "#a3b0dc" },
@@ -75,5 +76,70 @@ export const PIECES = [
       too. I think it is the same rain.`,
     afterword:
       "Plain weave is the strictest structure: over one, under one. Neither voice is heard whole on either face. What the front drops, the back keeps.",
+  },
+  {
+    slug: "lost-property",
+    title: "Lost property",
+    blurb: "Warp satin, written to the grid. The shelves keep their tags; the counter keeps the week.",
+    W: 30,
+    H: 15,
+    cell: 2,
+    structure: "warpsatin",
+    dyes: ["logwood", "greige"],
+    warpLabel: "the shelves",
+    weftLabel: "the counter",
+    // Written to the grid: one tag per warp thread (at most 15 characters),
+    // one line per weft pick (at most 30).
+    warp: [
+      "Shelf one",
+      "Hats, blue, 9",
+      "Hats, other",
+      "Left gloves, 12",
+      "Keys on a ring",
+      "Keys, no ring",
+      "A cello, no bow",
+      "A bow, no cello",
+      "Umbrellas, 41",
+      "Teeth, upper",
+      "Teeth, lower",
+      "A novel, open",
+      "at page 212",
+      "A pram, empty",
+      "A wedding shoe",
+      "The other shoe",
+      "A dog lead",
+      "A watch, going",
+      "A lunchbox",
+      "One crutch",
+      "A passport",
+      "A framed photo",
+      "of no one known",
+      "A cake box",
+      "Shelf six",
+      "One urn",
+      "Sealed, dated",
+      "Ticket 0417",
+      "Not called for",
+      "Still here",
+    ],
+    weft: [
+      "Monday a girl wanted her hat.",
+      "Blue, she said, with a bobble.",
+      "We had nine blue. None hers.",
+      "A man came in for one glove.",
+      "He wore the other, to show us.",
+      "A nurse, for a book half read.",
+      "She made us promise not to say",
+      "how it ends. None of us knew.",
+      "A boy came for his dad's watch",
+      "and went quiet when we had it.",
+      "Two men, one dog lead, no dog.",
+      "A bride's mother, for a shoe.",
+      "Thursday the van for the sale.",
+      "Friday the shelves filled up.",
+      "Nobody asked about the urn.",
+    ],
+    afterword:
+      "In a warp satin each thread floats over seven picks before it is bound, so the front is nearly all shelf: read it down, one tag to a thread. Turn it over for the counter, one line to a pick. Threads that lie side by side never cross: the cello and its bow, the upper teeth and the lower, the two shoes. Only the weft goes between them.",
   },
 ];
