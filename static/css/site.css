@@ -1,0 +1,164 @@
+@font-face {
+  font-family: "Spline Sans Mono";
+  src: url("/fonts/spline-sans-mono.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Spline Sans";
+  src: url("/fonts/spline-sans.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+/* Greige: loom-state cloth, before dyeing. Walnut at night. */
+:root {
+  --ground: #cfcdbd;
+  --ink: #2a2620;
+  --soft: #5e594d;
+  --rule: #a9a594;
+  --mark: #9c2f24;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #1f1a15;
+    --ink: #e6dfcf;
+    --soft: #a89f8c;
+    --rule: #4a4035;
+    --mark: #e08a6e;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 400 1.0625rem/1.55 "Spline Sans", system-ui, sans-serif;
+}
+a { color: inherit; text-decoration-color: var(--mark); text-underline-offset: 0.2em; }
+a:hover { color: var(--mark); }
+
+.frame {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+/* Header and footer are set like the selvage: a narrow mono edge. */
+.selvage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  justify-content: space-between;
+  font: 500 0.78rem/1.4 "Spline Sans Mono", monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--soft);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.6rem;
+}
+.selvage a { text-decoration: none; }
+.selvage .site { color: var(--ink); font-weight: 650; }
+footer.selvage { border-bottom: 0; border-top: 1px solid var(--rule); padding: 0.6rem 0 0; margin-top: 3rem; }
+
+h1 {
+  font: 650 clamp(1.9rem, 5vw, 3rem)/1.05 "Spline Sans", sans-serif;
+  letter-spacing: -0.02em;
+  margin: 2rem 0 0.4rem;
+}
+.lede { max-width: 38rem; color: var(--soft); margin: 0 0 1.5rem; }
+
+/* The cloth. Every cell is one crossing. */
+.loom { container-type: inline-size; }
+.cloth {
+  --W: 40;
+  display: grid;
+  grid-template-columns: repeat(var(--W), 1fr);
+  width: min(100%, calc(var(--W) * 1.15rem));
+  font: 500 calc(min(100cqi, var(--W) * 1.15rem) / var(--W) * 0.6) / 1 "Spline Sans Mono", monospace;
+  user-select: none;
+  touch-action: manipulation;
+  box-shadow: 0 1px 0 var(--rule), 0 10px 30px -18px #0008;
+  transition: transform 0.5s ease;
+}
+.cloth.turning { transform: rotateY(90deg); }
+.cloth i {
+  font-style: normal;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--a);
+  color: var(--af);
+  cursor: crosshair;
+}
+.cloth i.f { background: var(--b); color: var(--bf); }
+/* A lifted thread: everything else falls back, and the lifted thread's
+   hidden characters come up through the cloth, ringed. */
+.cloth.lifting i { opacity: 0.28; }
+.cloth.lifting i.on { opacity: 1; }
+.cloth.lifting i.under { outline: 1px dashed currentColor; outline-offset: -2px; }
+
+.reading {
+  min-height: 4.6rem;
+  margin: 0.9rem 0 0;
+  font: 400 0.95rem/1.5 "Spline Sans Mono", monospace;
+}
+.reading .which { display: block; color: var(--soft); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.reading .text { word-break: break-all; }
+.reading s { text-decoration: none; opacity: 0.4; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 0.4rem; }
+.controls button {
+  font: 500 0.82rem/1 "Spline Sans Mono", monospace;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.controls button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.controls .turn { margin-left: auto; }
+.note { font-size: 0.9rem; color: var(--soft); margin: 0.2rem 0 0; min-height: 1.4em; }
+
+.yarns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.2rem;
+}
+.yarns h2, .after h2 {
+  font: 500 0.78rem/1.4 "Spline Sans Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--soft);
+  margin: 0 0 0.5rem;
+}
+.yarns .chip { display: inline-block; width: 0.8em; height: 0.8em; vertical-align: -0.05em; margin-right: 0.4em; }
+.yarns p { margin: 0; max-width: 32rem; }
+.after { margin-top: 2rem; max-width: 38rem; }
+.after p { margin: 0; }
+
+/* Index: one swatch per piece. */
+.pieces { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+.pieces a { text-decoration: none; display: block; }
+.pieces svg { display: block; width: 100%; height: auto; box-shadow: 0 10px 30px -18px #0008; }
+.pieces .t { display: block; font-weight: 650; margin-top: 0.6rem; }
+.pieces .b { display: block; color: var(--soft); font-size: 0.92rem; }
+.pieces a:hover .t { color: var(--mark); }
+
+.prose { max-width: 38rem; }
+.prose h2 { font-size: 1.15rem; margin: 2rem 0 0.4rem; }
+.prose p, .prose li { margin: 0 0 0.8rem; }
+.prose .src { font-size: 0.85rem; color: var(--soft); }
+.demo { max-width: 16rem; margin: 0.8rem 0 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cloth { transition: none; }
+}

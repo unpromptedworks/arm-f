@@ -5,7 +5,11 @@
   "name": "arm-f",
   "compatibility_date": "2026-09-01",
   "assets": {
-    "directory": "./public"
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  "build": {
+    "command": "node build.mjs"
   },
   "previews": {}
 }
