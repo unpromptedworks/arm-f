@@ -1,0 +1,150 @@
+diff --git a/build.mjs b/build.mjs
+index b9a5f75..0f61209 100644
+--- a/build.mjs
++++ b/build.mjs
+@@ -80,10 +80,10 @@ function piecePage(p, n) {
+ <main>
+ <h1>${esc(p.title)}</h1>
+ <p class="lede">${esc(p.blurb)}</p>
+-<div class="loom">
+-<p class="note face" aria-live="polite">Front</p>
+-${cloth(p, p.structure, ' aria-label="The woven cloth: two texts crossed. Both texts are given in full below."')}
+-<p class="reading" aria-live="polite"><span class="which">${p.W} warp threads, ${p.H} weft picks</span>Point at a crossing, or tap it, to lift the thread on top and read everything it carries, the hidden part too.</p>
++<div class="loom piece ${p.figure ? "far" : "near"}">
++<div class="faceline"><p class="note face" aria-live="polite">Front</p><button type="button" class="distance" aria-pressed="${!!p.figure}">${p.figure ? "Come close" : "Step back"}</button></div>
++<div class="beam">${cloth(p, p.structure, ' tabindex="0" aria-label="The woven cloth: two texts crossed. Arrow keys lift threads. Both texts are given in full below."')}</div>
++<p class="reading" aria-live="polite"><span class="which">${p.W} warp threads, ${p.H} weft picks</span>Point at a crossing, or tap it, to lift the thread on top and read everything it carries, the hidden part too. <span class="hint">${p.figure ? "Come close to read the letters." : "Step back to see the pattern the two colours make."}</span></p>
+ </div>
+ <div class="controls" role="group" aria-label="Structure">${buttons}<button type="button" class="turn" aria-pressed="false">Turn it over</button></div>
+ <p class="note about" aria-live="polite">${esc(STRUCTURES[p.structure].note)}</p>
+@@ -132,7 +132,9 @@ function readingPage() {
+ ${ex("plain")}
+ <p>Above, in plain weave, the warp is indigo and the weft is weld. Every crossing shows one letter, from whichever thread is on top.</p>
+ <h2>Lifting a thread</h2>
+-<p>Point at a crossing (or tap it) and the thread on top there is lifted out of the cloth: the reading line under the cloth gives every character it carries, the hidden ones dimmed and ringed. On a phone, tap the lifted thread again to set it down.</p>
++<p>Point at a crossing (or tap it) and the thread on top there is lifted out of the cloth: the reading line under the cloth gives every character it carries, the hidden ones dimmed and ringed. On a phone, tap the lifted thread again to set it down. From the keyboard, the left and right arrows lift the warp threads one by one, the up and down arrows the weft picks, and Escape sets the thread down.</p>
++<h2>Stepping back</h2>
++<p>Cloth is read at two distances. Close to, you see the threads; across the room, you see the pattern they make. "Step back" lets the letters go, so only the two colours are left and a damask figure stands out; on a narrow screen it also fits the whole cloth to the screen. A lifted thread still lifts, and the reading line still reads it. "Come close" brings the letters back. Cloth with a figure opens stepped back, so the figure is the first thing you see. When the column is narrow, as on a phone, the close view keeps each crossing large enough to read and tap, and the cloth scrolls sideways; its right edge fades while there is more of it to see.</p>
+ <h2>Structures</h2>
+ <p>A structure is the rule for which thread is on top at each crossing. Plain weave goes over one, under one. Twill goes over two, under two, and steps along each pick, which draws diagonals.</p>
+ ${ex("twill")}
+diff --git a/static/css/site.css b/static/css/site.css
+index 136c138..48c90bb 100644
+--- a/static/css/site.css
++++ b/static/css/site.css
+@@ -86,6 +86,39 @@ h1 {
+   transition: transform 0.5s ease;
+ }
+ .cloth.turning { transform: rotateY(90deg); }
++
++/* Piece pages: two viewing distances. Close to, a crossing never drops
++   below --near, and the beam scrolls sideways on a narrow screen. Stepped
++   back, the cloth fits the screen at --far a crossing and the letters go. */
++.piece .beam { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 14px; scrollbar-width: thin; }
++.piece .cloth {
++  --size: max(var(--near, 1.4rem), min(100cqi / var(--W), var(--cell, 1.15rem)));
++  width: calc(var(--W) * var(--size));
++  font-size: calc(var(--size) * 0.6);
++  transition: transform 0.5s ease, width 0.45s ease;
++}
++.piece.far .cloth { --size: min(100cqi / var(--W), var(--cell, 1.15rem)); }
++/* Wide columns never need the floor: the whole cloth fits. */
++@container (min-width: 40rem) { .piece .cloth { --near: 0px; } }
++/* While more cloth lies to the right, its edge fades. */
++.piece .beam.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), #0003); mask-image: linear-gradient(to right, #000 calc(100% - 3rem), #0003); }
++.piece.far .cloth i { color: transparent; }
++.piece.far .cloth.lifting i { opacity: 0.6; }
++.piece.far .cloth.lifting i.on { opacity: 1; }
++.piece.far .cloth.lifting i.under { outline: 0; }
++.piece .cloth:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
++.faceline { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.4rem; }
++.faceline .note { margin: 0; }
++.distance {
++  font: 500 0.82rem/1 "Spline Sans Mono", monospace;
++  padding: 0.5rem 0.7rem;
++  border: 1px solid var(--rule);
++  background: transparent;
++  color: var(--ink);
++  border-radius: 2px;
++  cursor: pointer;
++}
++.distance[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+ .cloth i {
+   font-style: normal;
+   aspect-ratio: 1;
+@@ -165,5 +198,5 @@ h1 {
+ .demo { max-width: 16rem; margin: 0.8rem 0 1rem; }
+ 
+ @media (prefers-reduced-motion: reduce) {
+-  .cloth { transition: none; }
++  .cloth, .piece .cloth { transition: none; }
+ }
+diff --git a/static/js/loom.js b/static/js/loom.js
+index 5b526c4..e76ce69 100644
+--- a/static/js/loom.js
++++ b/static/js/loom.js
+@@ -5,7 +5,7 @@ const cloth = document.querySelector(".cloth");
+ const cells = [...cloth.children];
+ const reading = document.querySelector(".reading");
+ const note = document.querySelector(".note.about");
+-const idle = reading.innerHTML;
++let idle = reading.innerHTML;
+ let structure = p.structure;
+ let back = false;
+ let lifted = null;
+@@ -116,3 +116,55 @@ turn.addEventListener("click", () => {
+   cloth.classList.add("turning");
+   setTimeout(() => { flip(); cloth.classList.remove("turning"); }, 260);
+ });
++
++// Two viewing distances: close to, the letters; stepped back, the pattern.
++const loom = document.querySelector(".loom.piece");
++const distance = document.querySelector(".distance");
++const HINT = {
++  far: "Come close to read the letters.",
++  near: "Step back to see the pattern the two colours make.",
++};
++distance.addEventListener("click", () => {
++  const far = loom.classList.toggle("far");
++  loom.classList.toggle("near", !far);
++  distance.setAttribute("aria-pressed", String(far));
++  distance.textContent = far ? "Come close" : "Step back";
++  idle = idle.replace(/<span class="hint">[^<]*<\/span>/, `<span class="hint">${far ? HINT.far : HINT.near}</span>`);
++  if (!lifted) reading.innerHTML = idle;
++  setTimeout(edge, 500);
++});
++
++// Keys: left and right lift warp threads, up and down lift weft picks.
++let at_warp = -1;
++let at_weft = -1;
++const beam = document.querySelector(".beam");
++// Fade the right edge while more cloth lies beyond it.
++function edge() {
++  beam.classList.toggle("more", beam.scrollLeft + beam.clientWidth < beam.scrollWidth - 2);
++}
++beam.addEventListener("scroll", edge, { passive: true });
++addEventListener("resize", edge);
++edge();
++cloth.addEventListener("keydown", (e) => {
++  const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -1, ArrowDown: 1 }[e.key];
++  if (e.key === "Escape") { drop(); return; }
++  if (!step) return;
++  e.preventDefault();
++  let t;
++  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
++    at_warp = lifted && lifted[0] === "warp" ? (lifted[1] + step + p.W) % p.W : at_warp < 0 ? 0 : at_warp;
++    t = ["warp", at_warp];
++  } else {
++    at_weft = lifted && lifted[0] === "weft" ? (lifted[1] + step + p.H) % p.H : at_weft < 0 ? 0 : at_weft;
++    t = ["weft", at_weft];
++  }
++  lifted = null;
++  draw();
++  lift(...t);
++  if (t[0] === "warp") {
++    const el = cells[t[1]];
++    const x = el.offsetLeft - cloth.offsetLeft;
++    if (x < beam.scrollLeft || x + el.offsetWidth > beam.scrollLeft + beam.clientWidth)
++      beam.scrollLeft = x - beam.clientWidth / 2;
++  }
++});
