@@ -16,7 +16,7 @@ function draw() {
   woven = weave(p, structure, back);
   woven.forEach((cell, i) => {
     cells[i].textContent = cell.ch;
-    cells[i].className = cell.warp ? "" : "f";
+    cells[i].className = (cell.warp ? "" : "f") + (cell.meet ? " m" : "");
   });
   if (lifted) lift(...lifted);
 }
@@ -38,7 +38,7 @@ function lift(kind, i) {
     if (!x.shown) {
       el.classList.add("under");
       el.textContent = x.ch;
-      el.className = (kind === "warp" ? "" : "f") + " on under";
+      el.className = (kind === "warp" ? "" : "f") + (el.classList.contains("m") ? " m" : "") + " on under";
     }
   });
   const shown = t.filter((x) => x.shown).length;

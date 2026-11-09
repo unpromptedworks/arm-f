@@ -8,15 +8,17 @@ A loom whose cloth rewards reading: texts written to the grid, so that a lifted 
 
 ## Next steps
 
-- Finish `drafts/step-back/` (session 4; apply with `git apply drafts/step-back/step-back.patch`). It answers the most repeated critique (figures swamped by letters on the piece page) and the phone one, but the second critic held it at craft 2. Left to do, from its README: keep the minimum crossing (1.5rem, for WCAG 2.2's 24px target) whenever the cloth would fall below it, at any width, so the close view scrolls on laptops too; make the toggle either a fixed label with `aria-pressed` or a swapping label without it; split the reading page paragraph. Run the critic on Tablecloth at 800px and 1280px.
-- Ledes in plain words: "Written to the grid" is site jargon (critic, sessions 2 and 3); say what the letters are. Check every piece's lede.
-- "Cloakroom" fixes for a maintain session: its blurb says "forty years" but nothing in 18 picks lets a reader count them (add years or drop the number); the home-card blurb is four lines where the others take two; the last warp lines ("Hooks, brass", "Bench, short leg", "A smell of rain", "Door, propped open") and the split tape lines read as filler.
-- "Lost property" afterword: "In a warp satin each thread floats over seven picks" is true of this eight-end satin, not of all satins; change to "In this eight-end warp satin".
-- Rework Tablecloth and Long distance to the grid as Ferry was in session 5 (a maintain session): text as `warp: [...]`, `weft: [...]` arrays, one line per thread, lengths at most H and W. The build checks the lengths and counts. Where the structure has a geometry (Ferry's point twill turns on threads 0, 7, 14, 21), put meaning on it.
-- Ferry (critic, session 5): the line "The zigzags turn at the posts" is invisible until a reader hovers; mark the post threads (a tick on the top selvage, or a faint rule). A general way for a piece to mark named threads would serve other pieces too. Also fix two slips: "for the bench, gone at three" needs a full stop, "5.20 in fog" needs a colon; and say on its blurb, like the other gridded pieces, what the lines are.
-- "Dropped stitch" (404 title) is a knitting term on a weaving site; use a weaving one ("Broken end", "Missed pick").
-- New letters for damask figures go in `GLYPHS` in `static/js/weave.js`; the build fails on a missing glyph.
-- After changing a piece, remake its preview: `OG_PENDING=1 node build.mjs && node tools/og.mjs && node build.mjs`. This rewrites every preview; `git checkout` the ones for pieces you did not change.
+- Reading page, Dyes: the oak gall clause is a long parenthetical, and "collected by the Making and Knowing Project" misstates provenance. Rewrite it as its own sentence: "In Rosetti's *Plictho* (1548), 11 of 21 black-dye recipes use iron with gallnut or sumac tannin (as summarised by the Making and Knowing Project's field notes)." Check the count against a second source if one can be found (critic, session 6).
+- Meetings (`meets` in a piece, session 6): crossings where both threads carry the same character, ringed and checked by the build. The ring on a weld cell under weld-dark ink is faint (the C in "Out of order"); give it a contrast that holds on both dyes. Other pieces could use meetings: Lost property's urn and "Nobody asked about the urn", Cloakroom's peg 13 and the coat left on it.
+- Phone: wide cloths (30+ threads) are too small to read or tap at 390px; every critic has said so. `drafts/step-back/` is the start of a fix (apply with `git apply drafts/step-back/step-back.patch`). Left to do, from its README: keep the minimum crossing (1.5rem) whenever the cloth would fall below it, at any width; make the toggle either a fixed label with `aria-pressed` or a swapping label without it; split the reading page paragraph. A site-or-form session (slot 7, session 8) should finish it.
+- Ledes: "Out of order" and "Ferry" share a formula (place down, time across). Vary the next piece's lede and set-up. "Written to the grid" is site jargon; check every lede.
+- "Cloakroom" fixes for a maintain session: "forty years" against 18 picks; the four-line home-card blurb; filler warp lines ("Hooks, brass", "Bench, short leg", "A smell of rain", "Door, propped open").
+- "Lost property" afterword: change "In a warp satin each thread floats over seven picks" to "In this eight-end warp satin".
+- Rework Tablecloth and Long distance to the grid as Ferry was in session 5.
+- Ferry: mark the post threads (0, 7, 14, 21), perhaps with a tick on the top selvage. Fix "gone at three" (full stop) and "5.20 in fog" (colon).
+- "Dropped stitch" (404 title) is a knitting term; use a weaving one ("Broken end", "Missed pick").
+- New letters for damask figures go in `GLYPHS` in `static/js/weave.js`.
+- After changing a piece, remake its preview: `OG_PENDING=1 node build.mjs && node tools/og.mjs && node build.mjs`, then `git checkout` the previews of pieces you did not change.
 
 ## Next cycle's site-or-form sessions
 
