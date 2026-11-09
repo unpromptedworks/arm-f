@@ -1,6 +1,6 @@
 // Build: weave every page ahead of time into dist/. No dependencies.
 import { mkdirSync, rmSync, writeFileSync, cpSync, existsSync } from "node:fs";
-import { weave, spin, STRUCTURES } from "./static/js/weave.js";
+import { weave, spin, warpChar, weftChar, STRUCTURES } from "./static/js/weave.js";
 import { PIECES, DYES } from "./src/pieces.mjs";
 
 const SITE = "The Back of the Cloth";
@@ -50,7 +50,10 @@ function dyeVars(p) {
 
 function cloth(p, structure = p.structure, attrs = "") {
   const cells = weave(p, structure)
-    .map((c) => (c.warp ? `<i>${esc(c.ch)}</i>` : `<i class="f">${esc(c.ch)}</i>`))
+    .map((c) => {
+      const cls = [c.warp ? "" : "f", c.meet ? "m" : ""].filter(Boolean).join(" ");
+      return cls ? `<i class="${cls}">${esc(c.ch)}</i>` : `<i>${esc(c.ch)}</i>`;
+    })
     .join("");
   return `<div class="cloth" style="${dyeVars(p)}"${attrs}>${cells}</div>`;
 }
@@ -142,8 +145,8 @@ ${ex("weftsatin")}
 <h2>The back</h2>
 <p>Wherever the front shows the warp, the back shows the weft, and the other way round. Front and back together carry both texts complete. The back is drawn as if seen in a mirror, so its letters read left to right.</p>
 <h2>Dyes</h2>
-<p>Each piece is dyed in two colours named for historical dyestuffs: indigo, woad, weld, madder, logwood, walnut, and undyed cloth. The screen colours are approximations, not measurements of dyed fibre.</p>
-<p class="src">Sources for the weaving terms: Wikipedia, <a href="https://en.wikipedia.org/wiki/Warp_and_weft">Warp and weft</a>, <a href="https://en.wikipedia.org/wiki/Satin_weave">Satin weave</a> and <a href="https://en.wikipedia.org/wiki/Damask">Damask</a> (CC BY-SA 4.0), read October 2026. Type: Spline Sans and Spline Sans Mono by the Spline Sans Project Authors, SIL Open Font License 1.1 (<a href="/fonts/OFL-spline-sans.txt">licence</a>, <a href="/fonts/OFL-spline-sans-mono.txt">licence</a>).</p>
+<p>Each piece is dyed in two colours named for historical dyestuffs: indigo, woad, weld, madder, logwood, walnut, oak gall (with iron, for greys and blacks: of 21 historical black-dye recipes collected by the Making and Knowing Project, 11 use iron with tannin from gallnuts or sumac), and undyed cloth. The screen colours are approximations, not measurements of dyed fibre.</p>
+<p class="src">Sources for the weaving terms: Wikipedia, <a href="https://en.wikipedia.org/wiki/Warp_and_weft">Warp and weft</a>, <a href="https://en.wikipedia.org/wiki/Twill">Twill</a>, <a href="https://en.wikipedia.org/wiki/Satin_weave">Satin weave</a> and <a href="https://en.wikipedia.org/wiki/Damask">Damask</a> (CC BY-SA 4.0), read October 2026 (Twill read November 2026). For oak gall: Making and Knowing Project, <a href="https://fieldnotes.makingandknowing.org/mainSpace/Dye%20recipes%20from%20other%20sources.html">Dye recipes from other sources</a>, read November 2026. Type: Spline Sans and Spline Sans Mono by the Spline Sans Project Authors, SIL Open Font License 1.1 (<a href="/fonts/OFL-spline-sans.txt">licence</a>, <a href="/fonts/OFL-spline-sans-mono.txt">licence</a>).</p>
 </main>`;
   return page({
     path: "/reading/",
@@ -181,6 +184,12 @@ for (const p of PIECES) {
   if (!spin(p, "warp").trim() || !spin(p, "weft").trim()) throw new Error(`${p.slug}: empty yarn`);
   if (Array.isArray(p.warp) && p.warp.length !== p.W) throw new Error(`${p.slug}: ${p.warp.length} warp lines for ${p.W} threads`);
   if (Array.isArray(p.weft) && p.weft.length !== p.H) throw new Error(`${p.slug}: ${p.weft.length} weft lines for ${p.H} picks`);
+  // A marked meeting must carry the same character on both threads, so it
+  // shows on both faces.
+  for (const [r, c] of p.meets || []) {
+    const a = warpChar(spin(p, "warp"), p.H, r, c), b = weftChar(spin(p, "weft"), p.W, r, c);
+    if (a !== b || a === " ") throw new Error(`${p.slug}: meeting at pick ${r}, thread ${c} carries "${a}" and "${b}"`);
+  }
   weave(p, p.structure);
 }
 

@@ -120,6 +120,7 @@ export function weave(p, structure, back = false) {
   const w = spin(p, "warp");
   const f = spin(p, "weft");
   const up = STRUCTURES[structure].up(p);
+  const meets = new Set((p.meets || []).map(([r, c]) => r * p.W + c));
   const cells = [];
   for (let r = 0; r < p.H; r++) {
     for (let c = 0; c < p.W; c++) {
@@ -127,6 +128,7 @@ export function weave(p, structure, back = false) {
       cells.push({
         warp: warpOnTop,
         ch: warpOnTop ? warpChar(w, p.H, r, c) : weftChar(f, p.W, r, c),
+        meet: meets.has(r * p.W + c),
       });
     }
   }

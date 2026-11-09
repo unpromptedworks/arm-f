@@ -96,6 +96,9 @@ h1 {
   cursor: crosshair;
 }
 .cloth i.f { background: var(--b); color: var(--bf); }
+/* A meeting: both threads carry the same character here, so it shows on
+   both faces. Ringed in the colour of whichever text is on top. */
+.cloth i.m { box-shadow: inset 0 0 0 0.16em currentColor; font-weight: 700; }
 /* A lifted thread: everything else falls back, and the lifted thread's
    hidden characters come up through the cloth, ringed. */
 .cloth.lifting i { opacity: 0.28; }
