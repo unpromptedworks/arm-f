@@ -86,6 +86,38 @@ h1 {
   transition: transform 0.5s ease;
 }
 .cloth.turning { transform: rotateY(90deg); }
+
+/* Piece pages: two viewing distances. Close to, a crossing never drops
+   below 1.5rem (24px, WCAG 2.2's target size) at any width, and the beam
+   scrolls sideways when the cloth is wider than the column. Stepped back,
+   the whole cloth fits the column and the letters go. */
+.piece .beam { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 14px; scrollbar-width: thin; }
+.piece .cloth {
+  --size: max(1.5rem, min(100cqi / var(--W), var(--cell, 1.15rem)));
+  width: calc(var(--W) * var(--size));
+  font-size: calc(var(--size) * 0.6);
+  transition: transform 0.5s ease, width 0.45s ease;
+}
+.piece.far .cloth { --size: min(100cqi / var(--W), var(--cell, 1.15rem)); }
+/* While more cloth lies to the right, its edge fades. */
+.piece .beam.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), #0003); mask-image: linear-gradient(to right, #000 calc(100% - 3rem), #0003); }
+.piece.far .cloth i { color: transparent; }
+.piece.far .cloth.lifting i { opacity: 0.6; }
+.piece.far .cloth.lifting i.on { opacity: 1; }
+.piece.far .cloth.lifting i.under { outline: 0; }
+.piece .cloth:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
+.faceline { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.4rem; }
+.faceline .note { margin: 0; }
+.distance {
+  font: 500 0.82rem/1 "Spline Sans Mono", monospace;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.distance[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
 .cloth i {
   font-style: normal;
   aspect-ratio: 1;
@@ -168,5 +200,5 @@ h1 {
 .demo { max-width: 16rem; margin: 0.8rem 0 1rem; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cloth { transition: none; }
+  .cloth, .piece .cloth { transition: none; }
 }
