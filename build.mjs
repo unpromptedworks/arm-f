@@ -83,10 +83,10 @@ function piecePage(p, n) {
 <main>
 <h1>${esc(p.title)}</h1>
 <p class="lede">${esc(p.blurb)}</p>
-<div class="loom">
-<p class="note face" aria-live="polite">Front</p>
-${cloth(p, p.structure, ' aria-label="The woven cloth: two texts crossed. Both texts are given in full below."')}
-<p class="reading" aria-live="polite"><span class="which">${p.W} warp threads, ${p.H} weft picks</span>Point at a crossing, or tap it, to lift the thread on top and read everything it carries, the hidden part too.</p>
+<div class="loom piece ${p.figure ? "far" : "near"}">
+<div class="faceline"><p class="note face" aria-live="polite">Front</p><button type="button" class="distance" aria-pressed="${!!p.figure}">Step back</button></div>
+<div class="beam">${cloth(p, p.structure, ' tabindex="0" aria-label="The woven cloth: two texts crossed. Arrow keys lift threads. Both texts are given in full below."')}</div>
+<p class="reading" aria-live="polite"><span class="which">${p.W} warp threads, ${p.H} weft picks</span>Point at a crossing, or tap it, to lift the thread on top and read everything it carries, the hidden part too. <span class="hint">${p.figure ? "Stepped back: only the two colours show. Press Step back again to come close and read the letters." : "Step back to see the pattern the two colours make."}</span></p>
 </div>
 <div class="controls" role="group" aria-label="Structure">${buttons}<button type="button" class="turn" aria-pressed="false">Turn it over</button></div>
 <p class="note about" aria-live="polite">${esc(STRUCTURES[p.structure].note)}</p>
@@ -135,7 +135,10 @@ function readingPage() {
 ${ex("plain")}
 <p>Above, in plain weave, the warp is indigo and the weft is weld. Every crossing shows one letter, from whichever thread is on top.</p>
 <h2>Lifting a thread</h2>
-<p>Point at a crossing (or tap it) and the thread on top there is lifted out of the cloth: the reading line under the cloth gives every character it carries, the hidden ones dimmed and ringed. On a phone, tap the lifted thread again to set it down.</p>
+<p>Point at a crossing (or tap it) and the thread on top there is lifted out of the cloth: the reading line under the cloth gives every character it carries, the hidden ones dimmed and ringed. On a phone, tap the lifted thread again to set it down. From the keyboard, the left and right arrows lift the warp threads one by one, the up and down arrows the weft picks, and Escape sets the thread down.</p>
+<h2>Stepping back</h2>
+<p>Cloth is read at two distances. Close to, you see the threads and the letters they carry; across the room, you see only the pattern the two colours make: a twill's diagonals, a satin's scatter, a damask's word. Every piece page can be read at both, because every structure draws a pattern, not only the figured ones.</p>
+<p>"Step back" hides the letters and fits the whole cloth to the column. Press it again to come close. Cloth with a figure opens stepped back, so the figure is the first thing you see. Close to, a crossing is never smaller than 24 pixels, large enough to read and to tap; when the cloth is wider than that allows, it scrolls sideways, and its right edge fades while there is more of it to see. A lifted thread stays lifted at either distance, and the reading line still reads it.</p>
 <h2>Structures</h2>
 <p>A structure is the rule for which thread is on top at each crossing. Plain weave goes over one, under one. Twill goes over two, under two, and steps along each pick, which draws diagonals.</p>
 ${ex("twill")}
