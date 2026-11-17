@@ -109,25 +109,6 @@ export const PIECES = [
       "In a point twill the diagonal runs seven threads one way, then turns and comes back, so the cloth zigzags like a boat going over and back all day. The turns fall on the four posts. Lift a pick to read one crossing; lift a thread to walk the pier, post by post, out to where it stops.",
   },
   {
-    slug: "long-distance",
-    title: "Long distance",
-    blurb: "Plain weave. Two halves of a phone call; each side of the cloth hears half.",
-    W: 34,
-    H: 22,
-    structure: "plain",
-    dyes: ["madder", "greige"],
-    warpLabel: "the one who stayed",
-    weftLabel: "the one who left",
-    warp: `The roses came back. The gate still wants your shoulder. Your
-      room is as you left it, which means I go in and dust round the shape
-      of you and come out again.`,
-    weft: `The flat is small and the shop does not know my name yet. I walk
-      home the long way so I have something to tell you. It is raining here
-      too. I think it is the same rain.`,
-    afterword:
-      "Plain weave is the strictest structure: over one, under one. Neither voice is heard whole on either face. What the front drops, the back keeps.",
-  },
-  {
     slug: "lost-property",
     title: "Lost property",
     blurb: "Warp satin, written to the grid. The shelves keep their tags; the counter keeps the week.",
