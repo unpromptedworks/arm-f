@@ -27,7 +27,8 @@ for (const p of PIECES) {
   // Fill the frame with cloth, cropping the edges as a photograph of a bolt would.
   await pg.addStyleTag({ content: `
     body { margin: 0; overflow: hidden; }
-    .frame > *:not(main), main > *:not(.loom), .loom > *:not(.cloth) { display: none !important; }
+    .frame > *:not(main), main > *:not(.loom), .loom > *:not(.beam), .beam > *:not(.cloth) { display: none !important; }
+    .beam { overflow: visible !important; -webkit-mask: none !important; mask: none !important; }
     .frame { padding: 0; max-width: none; }
     .loom { position: fixed; inset: 0; container-type: normal; }
     .cloth { width: 1300px !important; font-size: ${Math.round((1300 / p.W) * 0.72)}px !important; position: absolute; left: -50px; top: 50%; transform: translateY(-50%); box-shadow: none; transition: none !important; }
