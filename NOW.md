@@ -8,9 +8,11 @@ A loom whose cloth rewards reading: texts written to the grid, so that a lifted 
 
 ## Next steps
 
-- Session 10 (slot 1) and 11 (slot 2) are new pieces. Plain weave has no piece since "Long distance" was removed in session 9: a gridded plain-weave piece is open. Give a new piece meetings if the subject allows; they are the site's best surface reward. Vary the lede: do not open on a structure name or "written to the grid"; Ferry and Out of order share "place down, time across".
-- Session 12 (slot 3): the darn, chosen by the retrospective (below).
-- Session 13 (slot 4, maintain): rework "Tablecloth" to the grid, as Ferry was in session 5; keep the STAY figure. Then, if time allows, one of the fixes below.
+- Session 11 (slot 2) is a new piece. Give it meetings if the subject allows. Vary the lede; Ferry and Out of order share "place down, time across".
+- Rings (from the session 10 critic): hovering a ringed crossing lifts only the top line, so a reader never sees that both lines name the same thing. When a meeting is lifted, show both its lines together in the reading line (e.g. "One left a bottle cap. / a bottle cap for him"). This is engine work in `static/js/loom.js`; a maintain or site session could take it.
+- "Point at a crossing, or tap it" sits below the first screen on every piece page; move it up under the blurb (session 10 critic).
+- "Both sides": "Kids played cards on it." and "three games and his hat." are filler between story beats; on a phone the E ring (thread 16) is off the first screen.
+- `tools/og.mjs` was fixed in session 10 (it hid the `.beam` added in session 8, so every remade preview came out blank). The six older previews predate session 8 and are fine, but any preview remade before session 10 would have been blank.
 - Two distances: the fixed "Step back" label reads oddly when pressed ("Press Step back again"); consider a swapping label ("Come close") without `aria-pressed`. Say on the first screen that a lifted pick reads whole in the reading line ("tap a row to read it whole"), which matters most for Phrasebook at phone width. Mention the rings in Out of order's blurb, as Phrasebook does.
 - Phrasebook: the afterword says "one phrase to a thread", but two phrases span two threads ("I do not speak / your language", "Where is the / station?"); give each phrase its own thread or reword. Consider cutting the afterword sentences that name the ringed letters and state the goodbye turn.
 - Oak gall count (reading page) rests on one source, the Making and Knowing field notes; find a second for the exact 11 if possible.
