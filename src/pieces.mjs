@@ -13,6 +13,7 @@ export const DYES = {
   logwood: { name: "logwood", bg: "#4b2f5c", fg: "#ece0f2" },
   woad: { name: "woad", bg: "#7d93ab", fg: "#14202d" },
   gall: { name: "oak gall", bg: "#3c3f40", fg: "#dcdcd4" },
+  crotal: { name: "crotal", bg: "#a85a32", fg: "#fbe9dc" },
 };
 
 export const PIECES = [
@@ -466,5 +467,77 @@ export const PIECES = [
     meets: [[7, 16], [13, 2]],
     afterword:
       "Over one, under one: the front is a checkerboard, like the table, and each face shows every other letter of both texts. The back has the other half. Lift a thread for a line of the table, a pick for a line of the year. Many crossings share a letter by chance. The two rings are where a line of the year meets the thing on the table it names, on a letter of that word: the cap left by a stranger, the bench the old man changed to. There the same letter shows on both faces.",
+  },
+
+  {
+    slug: "bothy",
+    title: "Bothy",
+    blurb: "Point twill: the zigzags are hills. A bothy is a hut in the hills, left unlocked, free to anyone. Lift a thread for the hut; lift a pick for a line someone wrote in its book. Every line was written in the book, so every line crosses the book's own thread on the same letter: the ringed column.",
+    W: 24,
+    H: 20,
+    cell: 2,
+    structure: "point",
+    dyes: ["gall", "crotal"],
+    warpLabel: "the hut",
+    weftLabel: "the book",
+    // Written to the grid: one line per warp thread (at most 20 characters),
+    // one line per weft pick (at most 24). Thread 12 (index 11) is the book.
+    // Every pick carries, at column 11, the book thread's own letter for that
+    // pick, so the book reads whole on both faces.
+    warp: [
+      "Stone, two rooms,",
+      "tin roof, roped down",
+      "Hills on all sides",
+      "A stream for water",
+      "No lock, no key:",
+      "A door on a latch",
+      "Fireplace, no wood",
+      "An axe, blunt",
+      "A sleeping platform",
+      "of boards, worn",
+      "Candle stubs in jars",
+      "The book, on a shelf",
+      "pencil on a string",
+      "Mice in the wall",
+      "A drip over the bed",
+      "A spade by the door",
+      "For wet socks:",
+      "a row of nails",
+      "No phone signal",
+      "Nine miles to a road",
+      "Free to anyone",
+      "The rule on the door",
+      "leave it as found",
+      "or better",
+    ],
+    weft: [
+      "Jan. Snow. Two hours in.",
+      "Fire would hardly take.",
+      "Slept in every coat.",
+      "Feb. Mouse. Ate my oats.",
+      "Snowed in, both of us.",
+      "Read this book back",
+      "to the far off 1987.",
+      "Apr. Thaw, kestrels.",
+      "May. Cuckoo, one glove.",
+      "Hung it up, on a nail.",
+      "Jun. Dark? Only just.",
+      "Aug. Nine. No room.",
+      "Sep. Latch, mended.",
+      "Oct. Rain, and a spate.",
+      "so I waited a day.",
+      "Nov. Wood. Sticks. Logs.",
+      "My glove! Thank you.",
+      "Still on the nail.",
+      "Dec. Lit all of it.",
+      "Left fresh for the next.",
+    ],
+    // [pick, thread]: the book column (its letters, not its spaces), then the
+    // nail, the latch and the wood, each where a line meets the thing it names.
+    meets: [[0, 11], [1, 11], [2, 11], [4, 11], [5, 11], [6, 11], [7, 11], [8, 11], [10, 11], [11, 11], [13, 11], [15, 11], [16, 11], [17, 11], [18, 11], [19, 11], [9, 17], [12, 5], [15, 6]],
+    afterword:
+      "A point twill climbs for seven threads and comes back down, so the front is a row of ridges. Lift a thread for a part of the hut, read down; lift a pick for a line of its book, read across, each line by whoever came. The twelfth thread is the book itself, and every line of the year was written in it: each pick crosses that thread on the letter the thread carries there, so the column of rings reads THE BOOK, ON A SHELF on the front and again on the back. Three more rings are where a line meets the thing it names: the nail, the latch and the wood.",
+    source:
+      'What a bothy is: Wikipedia, <a href="https://en.wikipedia.org/wiki/Bothy">Bothy</a> (CC BY-SA 4.0), read November 2026. The hut and the book are invented.',
   },
 ];

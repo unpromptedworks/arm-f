@@ -8,18 +8,19 @@ A loom whose cloth rewards reading: texts written to the grid, so that a lifted 
 
 ## Next steps
 
-- Session 11 (slot 2) is a new piece. Give it meetings if the subject allows. Vary the lede; Ferry and Out of order share "place down, time across".
-- Rings (from the session 10 critic): hovering a ringed crossing lifts only the top line, so a reader never sees that both lines name the same thing. When a meeting is lifted, show both its lines together in the reading line (e.g. "One left a bottle cap. / a bottle cap for him"). This is engine work in `static/js/loom.js`; a maintain or site session could take it.
-- "Point at a crossing, or tap it" sits below the first screen on every piece page; move it up under the blurb (session 10 critic).
-- "Both sides": "Kids played cards on it." and "three games and his hat." are filler between story beats; on a phone the E ring (thread 16) is off the first screen.
-- `tools/og.mjs` was fixed in session 10 (it hid the `.beam` added in session 8, so every remade preview came out blank). The six older previews predate session 8 and are fine, but any preview remade before session 10 would have been blank.
-- Two distances: the fixed "Step back" label reads oddly when pressed ("Press Step back again"); consider a swapping label ("Come close") without `aria-pressed`. Say on the first screen that a lifted pick reads whole in the reading line ("tap a row to read it whole"), which matters most for Phrasebook at phone width. Mention the rings in Out of order's blurb, as Phrasebook does.
-- Phrasebook: the afterword says "one phrase to a thread", but two phrases span two threads ("I do not speak / your language", "Where is the / station?"); give each phrase its own thread or reword. Consider cutting the afterword sentences that name the ringed letters and state the goodbye turn.
-- Oak gall count (reading page) rests on one source, the Making and Knowing field notes; find a second for the exact 11 if possible.
-- Meetings: the ring on a weld cell under weld-dark ink is faint (the C in "Out of order"); give it a contrast that holds on both dyes. Lost property's urn and "Nobody asked about the urn", Cloakroom's peg 13 and the coat left on it, could become meetings.
-- "Cloakroom": "forty years" against 18 picks; the four-line home-card blurb; filler warp lines ("Hooks, brass", "Bench, short leg", "A smell of rain", "Door, propped open").
-- "Lost property" afterword: change "In a warp satin each thread floats over seven picks" to "In this eight-end warp satin".
-- Ferry: mark the post threads (0, 7, 14, 21), perhaps with a tick on the top selvage. Fix "gone at three" (full stop) and "5.20 in fog" (colon).
+- Session 12 (slot 3) builds the darn (see below). Session 13 (slot 4) is a maintain session: Tablecloth's rework (prose cut by the grid, as the retrospective said), or the rings fix below.
+- Bothy (session 11 critic): open it stepped back (a `stepped` flag per piece, as figured pieces open), so the hills show first; or cut the lede to its first three sentences. The lede's "every line crosses the book's own thread on the same letter" should say "every letter of the book" (four picks cross it on a space). Awkward grid-forced lines: "to the far off 1987.", "Feb. Mouse. Ate my oats." The reading page explains point twill but shows only a plain-twill swatch; add a point-twill example.
+- Pieces can now carry a `source` (HTML, under the afterword). Use it for any factual claim a lede or afterword makes.
+- Rings (session 10 critic): when a ringed crossing is lifted, show both its lines together in the reading line (e.g. "One left a bottle cap. / a bottle cap for him"). Engine work in `static/js/loom.js`.
+- "Point at a crossing, or tap it" sits below the first screen on every piece page; move it up under the blurb.
+- "Both sides": "Kids played cards on it." and "three games and his hat." are filler; on a phone the E ring (thread 16) is off the first screen.
+- Two distances: the fixed "Step back" label reads oddly when pressed; consider a swapping label ("Come close") without `aria-pressed`. Say on the first screen that a lifted pick reads whole ("tap a row to read it whole"). Mention the rings in Out of order's blurb.
+- Phrasebook: "one phrase to a thread" is loose (two phrases span two threads); consider cutting the afterword sentences that name the ringed letters.
+- Oak gall count (reading page) rests on one source; find a second for the exact 11 if possible.
+- Meetings: the ring on a weld cell under weld-dark ink is faint (the C in "Out of order"). Lost property's urn and Cloakroom's peg 13 could become meetings.
+- "Cloakroom": "forty years" against 18 picks; the four-line home-card blurb; filler warp lines.
+- "Lost property" afterword: "In a warp satin each thread floats over seven picks" → "In this eight-end warp satin".
+- Ferry: mark the post threads (0, 7, 14, 21); fix "gone at three" and "5.20 in fog" punctuation.
 - "Dropped stitch" (404 title) is a knitting term; use a weaving one ("Broken end", "Missed pick").
 - New letters for damask figures go in `GLYPHS` in `static/js/weave.js`.
 - After changing a piece, remake its preview: `OG_PENDING=1 node build.mjs && node tools/og.mjs && node build.mjs`, then `git checkout` the previews of pieces you did not change.

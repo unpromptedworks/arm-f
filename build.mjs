@@ -91,7 +91,7 @@ function piecePage(p, n) {
 <div class="controls" role="group" aria-label="Structure">${buttons}<button type="button" class="turn" aria-pressed="false">Turn it over</button></div>
 <p class="note about" aria-live="polite">${esc(STRUCTURES[p.structure].note)}</p>
 ${yarns(p, a, b)}
-<section class="after"><h2>On the structure</h2><p>${esc(p.afterword)}</p></section>
+<section class="after"><h2>On the structure</h2><p>${esc(p.afterword)}</p>${p.source ? `<p class="src">${p.source}</p>` : ""}</section>
 <p class="selvage" style="border:0;margin-top:2rem">${prev ? `<a href="/pieces/${prev.slug}/">← ${esc(prev.title)}</a>` : "<span></span>"}${next ? `<a href="/pieces/${next.slug}/">${esc(next.title)} →</a>` : "<span></span>"}</p>
 </main>`;
   const script = `<script type="application/json" id="piece">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>
@@ -140,7 +140,7 @@ ${ex("plain")}
 <p>Cloth is read at two distances. Close to, you see the threads and the letters they carry; across the room, you see only the pattern the two colours make: a twill's diagonals, a satin's scatter, a damask's word. Every piece page can be read at both, because every structure draws a pattern, not only the figured ones.</p>
 <p>"Step back" hides the letters and fits the whole cloth to the column. Press it again to come close. Cloth with a figure opens stepped back, so the figure is the first thing you see. Close to, a crossing is never smaller than 24 pixels, large enough to read and to tap; when the cloth is wider than that allows, it scrolls sideways, and its right edge fades while there is more of it to see. A lifted thread stays lifted at either distance, and the reading line still reads it.</p>
 <h2>Structures</h2>
-<p>A structure is the rule for which thread is on top at each crossing. Plain weave goes over one, under one. Twill goes over two, under two, and steps along each pick, which draws diagonals.</p>
+<p>A structure is the rule for which thread is on top at each crossing. Plain weave goes over one, under one. Twill goes over two, under two, and steps along each pick, which draws diagonals. Point twill turns the step back every seven threads, so the diagonals meet in zigzags.</p>
 ${ex("twill")}
 <p>Satin lets one set of threads float over several of the other (seven, here) before it is bound down, so one text covers nearly the whole face: a warp satin reads down, a weft satin reads across.</p>
 ${ex("weftsatin")}
@@ -148,8 +148,8 @@ ${ex("weftsatin")}
 <h2>The back</h2>
 <p>Wherever the front shows the warp, the back shows the weft, and the other way round. Front and back together carry both texts complete. The back is drawn as if seen in a mirror, so its letters read left to right.</p>
 <h2>Dyes</h2>
-<p>Each piece is dyed in two colours named for historical dyestuffs: indigo, woad, weld, madder, logwood, walnut, oak gall, and undyed cloth. Oak gall gives greys and blacks with iron: in Rosetti's <i>Plictho</i> (1548), 11 of 21 black-dye recipes use iron with tannin from gallnuts or sumac, as counted by the Making and Knowing Project. The screen colours are approximations, not measurements of dyed fibre.</p>
-<p class="src">Sources for the weaving terms: Wikipedia, <a href="https://en.wikipedia.org/wiki/Warp_and_weft">Warp and weft</a>, <a href="https://en.wikipedia.org/wiki/Twill">Twill</a>, <a href="https://en.wikipedia.org/wiki/Satin_weave">Satin weave</a> and <a href="https://en.wikipedia.org/wiki/Damask">Damask</a> (CC BY-SA 4.0), read October 2026 (Twill read November 2026). For oak gall: Making and Knowing Project, <a href="https://fieldnotes.makingandknowing.org/mainSpace/Dye%20recipes%20from%20other%20sources.html">Dye recipes from other sources</a>, read November 2026. Type: Spline Sans and Spline Sans Mono by the Spline Sans Project Authors, SIL Open Font License 1.1 (<a href="/fonts/OFL-spline-sans.txt">licence</a>, <a href="/fonts/OFL-spline-sans-mono.txt">licence</a>).</p>
+<p>Each piece is dyed in two colours named for historical dyestuffs: indigo, woad, weld, madder, logwood, walnut, oak gall, crotal, and undyed cloth. Oak gall gives greys and blacks with iron: in Rosetti's <i>Plictho</i> (1548), 11 of 21 black-dye recipes use iron with tannin from gallnuts or sumac, as counted by the Making and Knowing Project. Crotal is a lichen that grows on rock, <i>Parmelia saxatilis</i>; it gives red-browns and rusty oranges, and was used to dye Harris tweed. The screen colours are approximations, not measurements of dyed fibre.</p>
+<p class="src">Sources for the weaving terms: Wikipedia, <a href="https://en.wikipedia.org/wiki/Warp_and_weft">Warp and weft</a>, <a href="https://en.wikipedia.org/wiki/Twill">Twill</a>, <a href="https://en.wikipedia.org/wiki/Satin_weave">Satin weave</a> and <a href="https://en.wikipedia.org/wiki/Damask">Damask</a> (CC BY-SA 4.0), read October 2026 (Twill read November 2026). For oak gall: Making and Knowing Project, <a href="https://fieldnotes.makingandknowing.org/mainSpace/Dye%20recipes%20from%20other%20sources.html">Dye recipes from other sources</a>, read November 2026. For crotal: Wikipedia, <a href="https://en.wikipedia.org/wiki/Parmelia_saxatilis">Parmelia saxatilis</a> (CC BY-SA 4.0), read November 2026. Type: Spline Sans and Spline Sans Mono by the Spline Sans Project Authors, SIL Open Font License 1.1 (<a href="/fonts/OFL-spline-sans.txt">licence</a>, <a href="/fonts/OFL-spline-sans-mono.txt">licence</a>).</p>
 </main>`;
   return page({
     path: "/reading/",
