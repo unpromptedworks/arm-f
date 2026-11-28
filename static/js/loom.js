@@ -1,4 +1,4 @@
-import { weave, thread, STRUCTURES } from "./weave.js";
+import { weave, thread, darn, inDarn, cls, STRUCTURES } from "./weave.js";
 
 const p = JSON.parse(document.getElementById("piece").textContent);
 const cloth = document.querySelector(".cloth");
@@ -9,14 +9,15 @@ let idle = reading.innerHTML;
 let structure = p.structure;
 let back = false;
 let lifted = null;
+let torn = false;
 
-let woven = weave(p, structure, back);
+let woven = weave(p, structure, back, torn);
 
 function draw() {
-  woven = weave(p, structure, back);
+  woven = weave(p, structure, back, torn);
   woven.forEach((cell, i) => {
     cells[i].textContent = cell.ch;
-    cells[i].className = (cell.warp ? "" : "f") + (cell.meet ? " m" : "");
+    cells[i].className = cls(cell);
   });
   if (lifted) lift(...lifted);
 }
@@ -28,12 +29,14 @@ function esc(s) {
 // Raise one thread: show every character it carries, the hidden ones too.
 function lift(kind, i) {
   lifted = [kind, i];
-  const t = thread(p, structure, back, kind, i);
   cloth.classList.add("lifting");
   cells.forEach((el) => el.classList.remove("on", "under"));
+  if (kind === "darn") return liftDarn();
+  const t = thread(p, structure, back, kind, i);
   t.forEach((x, k) => {
     const idx = kind === "warp" ? k * p.W + i : i * p.W + k;
     const el = cells[idx];
+    if (x.lost) return;
     el.classList.add("on");
     if (!x.shown) {
       el.classList.add("under");
@@ -42,13 +45,30 @@ function lift(kind, i) {
     }
   });
   const shown = t.filter((x) => x.shown).length;
+  const lost = t.filter((x) => x.lost).length;
   const label = kind === "warp"
     ? `Warp thread ${i + 1} of ${p.W} · ${p.warpLabel}`
     : `Weft pick ${i + 1} of ${p.H} · ${p.weftLabel}`;
-  const text = t.map((x) => (x.shown ? esc(x.ch) : `<s>${esc(x.ch)}</s>`)).join("");
+  const text = t.map((x) => (x.lost ? `<s class="lost">·</s>` : x.shown ? esc(x.ch) : `<s>${esc(x.ch)}</s>`)).join("");
   reading.innerHTML =
-    `<span class="which">${label} · ${shown} of ${t.length} on this face</span>` +
+    `<span class="which">${label} · ${shown} of ${t.length} on this face${lost ? ` · ${lost} lost in the hole` : ""}</span>` +
     `<span class="text">${text.replace(/ /g, "&nbsp;")}</span>`;
+}
+
+// The darn is one length of yarn: lifting any of it lifts all of it, and the
+// reading line gives its lines in the order they were laid and woven.
+function liftDarn() {
+  const d = p.darn;
+  cells.forEach((el, idx) => {
+    if (inDarn(p, Math.floor(idx / p.W), idx % p.W)) el.classList.add("on");
+  });
+  const lines = darn(p, back).map((l) =>
+    l.map((x) => (x.shown ? esc(x.ch) : `<s>${esc(x.ch)}</s>`)).join("").replace(/( |<s> <\/s>)+$/, ""));
+  const laid = lines.slice(0, d.w).join(" ");
+  const woven_ = lines.slice(d.w).join(" ");
+  reading.innerHTML =
+    `<span class="which">The darn, in ${esc(d.dyeName)} · ${esc(d.label)} · laid down, then woven across</span>` +
+    `<span class="text">${laid} / ${woven_}</span>`;
 }
 
 function drop() {
@@ -64,6 +84,8 @@ function at(e) {
   const el = e.target.closest(".cloth i");
   if (!el) return null;
   const i = cells.indexOf(el);
+  if (woven[i].hole) return null;
+  if (woven[i].darn) return ["darn", 0];
   return woven[i].warp ? ["warp", i % p.W] : ["weft", Math.floor(i / p.W)];
 }
 
@@ -117,6 +139,16 @@ turn.addEventListener("click", () => {
   setTimeout(() => { flip(); cloth.classList.remove("turning"); }, 260);
 });
 
+// Unpick the darn to see the hole it mends, and the broken ends round it.
+const unpick = document.querySelector(".unpick");
+if (unpick) unpick.addEventListener("click", () => {
+  torn = !torn;
+  unpick.setAttribute("aria-pressed", String(torn));
+  unpick.textContent = torn ? "Darn it again" : "Unpick the darn";
+  if (torn && lifted && lifted[0] === "darn") { lifted = null; cloth.classList.remove("lifting"); reading.innerHTML = idle; }
+  draw();
+});
+
 // Two viewing distances: close to, the letters; stepped back, the pattern.
 const loom = document.querySelector(".loom.piece");
 const distance = document.querySelector(".distance");
@@ -147,6 +179,7 @@ edge();
 cloth.addEventListener("keydown", (e) => {
   const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -1, ArrowDown: 1 }[e.key];
   if (e.key === "Escape") { drop(); return; }
+  if (e.key === "d" && p.darn && !torn) { lifted = null; draw(); lift("darn", 0); return; }
   if (!step) return;
   e.preventDefault();
   let t;

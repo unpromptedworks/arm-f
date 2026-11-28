@@ -113,10 +113,51 @@ export const STRUCTURES = {
   },
 };
 
+// A darn: a hole in the cloth, mended later with a third yarn. The original
+// threads are lost inside it. The darner first lays strands down across the
+// hole (one per lost warp thread), then weaves passes across them, over one,
+// under one. It is one length of yarn, so one text: the laid strands' lines
+// first (each at most d.h long), then the passes' (each at most d.w).
+export function inDarn(p, r, c) {
+  const d = p.darn;
+  return !!d && r >= d.r && r < d.r + d.h && c >= d.c && c < d.c + d.w;
+}
+
+export function darnLines(d) {
+  return d.lines.map((l, i) => {
+    const n = i < d.w ? d.h : d.w;
+    const u = l.toUpperCase();
+    if (u.length > n) throw new Error(`darn line longer than ${n}: ${l}`);
+    return u.padEnd(n, " ");
+  });
+}
+
+// At a crossing inside the darn: is the laid strand on top, and what shows?
+function darnCell(p, r, c, back) {
+  const d = p.darn;
+  const L = darnLines(d);
+  const j = c - d.c, i = r - d.r;
+  const laid = ((i + j) % 2 === 0) !== back;
+  return { laid, ch: laid ? L[j][i] : L[d.w + i][j] };
+}
+
+// The whole darn, line by line, with which characters show on this face.
+export function darn(p, back = false) {
+  const d = p.darn;
+  const L = darnLines(d);
+  return L.map((line, n) =>
+    [...line].map((ch, k) => {
+      const [j, i] = n < d.w ? [n, k] : [k, n - d.w];
+      return { ch, shown: (((i + j) % 2 === 0) !== back) === n < d.w };
+    }));
+}
+
 // Weave a piece. Returns a flat array of cells, row by row. On the back the
 // structure is inverted: every crossing that shows warp on the front shows
 // weft behind. (The back is drawn as if seen in a mirror, so it reads.)
-export function weave(p, structure, back = false) {
+// With torn set, the darn is unpicked: the hole shows, and the broken ends
+// (thrums) hang into it from the cloth round its edge.
+export function weave(p, structure, back = false, torn = false) {
   const w = spin(p, "warp");
   const f = spin(p, "weft");
   const up = STRUCTURES[structure].up(p);
@@ -124,6 +165,16 @@ export function weave(p, structure, back = false) {
   const cells = [];
   for (let r = 0; r < p.H; r++) {
     for (let c = 0; c < p.W; c++) {
+      if (inDarn(p, r, c)) {
+        const d = p.darn;
+        if (torn) {
+          cells.push({ hole: true, ch: " ", thrums: [r === d.r && r > 0 ? "n" : "", r === d.r + d.h - 1 && r < p.H - 1 ? "s" : "", c === d.c && c > 0 ? "w" : "", c === d.c + d.w - 1 && c < p.W - 1 ? "e" : ""].join("") });
+        } else {
+          const x = darnCell(p, r, c, back);
+          cells.push({ darn: true, laid: x.laid, ch: x.ch });
+        }
+        continue;
+      }
       const warpOnTop = up(r, c) !== back;
       cells.push({
         warp: warpOnTop,
@@ -136,6 +187,7 @@ export function weave(p, structure, back = false) {
 }
 
 // Everything a thread carries, and which of its characters are on top.
+// Inside a darn the thread is gone: those characters are lost.
 export function thread(p, structure, back, kind, i) {
   const w = spin(p, "warp");
   const f = spin(p, "weft");
@@ -145,6 +197,10 @@ export function thread(p, structure, back, kind, i) {
   for (let k = 0; k < n; k++) {
     const r = kind === "warp" ? k : i;
     const c = kind === "warp" ? i : k;
+    if (inDarn(p, r, c)) {
+      out.push({ ch: "·", shown: false, lost: true });
+      continue;
+    }
     const warpOnTop = up(r, c) !== back;
     out.push({
       ch: kind === "warp" ? warpChar(w, p.H, r, c) : weftChar(f, p.W, r, c),
@@ -152,4 +208,12 @@ export function thread(p, structure, back, kind, i) {
     });
   }
   return out;
+}
+
+// The classes a crossing wears: weft on top (f), a meeting (m), the darn (d,
+// with x where its pass is on top), or the hole and its thrums (h, t-n...).
+export function cls(cell) {
+  if (cell.hole) return ["h", ...[...cell.thrums].map((t) => "t" + t)].join(" ");
+  if (cell.darn) return cell.laid ? "d" : "d x";
+  return [cell.warp ? "" : "f", cell.meet ? "m" : ""].filter(Boolean).join(" ");
 }

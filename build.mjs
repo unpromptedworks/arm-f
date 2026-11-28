@@ -1,6 +1,6 @@
 // Build: weave every page ahead of time into dist/. No dependencies.
 import { mkdirSync, rmSync, writeFileSync, cpSync, existsSync } from "node:fs";
-import { weave, spin, warpChar, weftChar, STRUCTURES } from "./static/js/weave.js";
+import { weave, spin, warpChar, weftChar, inDarn, darnLines, cls, STRUCTURES } from "./static/js/weave.js";
 import { PIECES, DYES } from "./src/pieces.mjs";
 
 const SITE = "The Back of the Cloth";
@@ -45,14 +45,16 @@ ${script}
 function dyeVars(p) {
   const [a, b] = p.dyes.map((d) => DYES[d]);
   const cell = p.cell ? `;--cell:${p.cell}rem` : "";
-  return `--W:${p.W};--a:${a.bg};--af:${a.fg};--b:${b.bg};--bf:${b.fg}${cell}`;
+  const c = p.darn ? DYES[p.darn.dye] : null;
+  const mend = c ? `;--c:${c.bg};--cf:${c.fg}` : "";
+  return `--W:${p.W};--a:${a.bg};--af:${a.fg};--b:${b.bg};--bf:${b.fg}${cell}${mend}`;
 }
 
 function cloth(p, structure = p.structure, attrs = "") {
   const cells = weave(p, structure)
     .map((c) => {
-      const cls = [c.warp ? "" : "f", c.meet ? "m" : ""].filter(Boolean).join(" ");
-      return cls ? `<i class="${cls}">${esc(c.ch)}</i>` : `<i>${esc(c.ch)}</i>`;
+      const k = cls(c);
+      return k ? `<i class="${k}">${esc(c.ch)}</i>` : `<i>${esc(c.ch)}</i>`;
     })
     .join("");
   return `<div class="cloth" style="${dyeVars(p)}"${attrs}>${cells}</div>`;
@@ -60,13 +62,30 @@ function cloth(p, structure = p.structure, attrs = "") {
 
 // The two texts unwoven. A text written to the grid is listed thread by
 // thread and folded away, so the cloth is read first.
+// What the hole took from a line: its characters inside the darn, shown as
+// dots, since they are not in the cloth any more.
+function holed(p, kind, i, line) {
+  if (!p.darn) return esc(line);
+  const n = kind === "warp" ? p.H : p.W;
+  return [...line.padEnd(n, " ")]
+    .map((ch, k) => (inDarn(p, kind === "warp" ? k : i, kind === "warp" ? i : k) ? '<span class="lost">·</span>' : esc(ch)))
+    .join("")
+    .replace(/ +$/, "");
+}
+
 function yarns(p, a, b) {
-  const text = (t) =>
-    Array.isArray(t) ? `<ol>${t.map((l) => `<li>${esc(l)}</li>`).join("")}</ol>` : `<p>${esc(t.replace(/\s+/g, " ").trim())}</p>`;
+  const text = (t, kind) =>
+    Array.isArray(t) ? `<ol>${t.map((l, i) => `<li>${holed(p, kind, i, l)}</li>`).join("")}</ol>` : `<p>${esc(t.replace(/\s+/g, " ").trim())}</p>`;
+  const d = p.darn;
+  const mend = d
+    ? `<div><h2><span class="chip" style="background:${DYES[d.dye].bg}"></span>Darn, in ${DYES[d.dye].name}: ${esc(d.label)}</h2><ol>${d.lines
+        .map((l, i) => `<li${i === d.w ? ' class="turnto"' : ""}>${esc(l)}</li>`)
+        .join("")}</ol><p class="note">The first ${d.w} lines are laid down across the hole, the last ${d.h} woven across them.</p></div>`
+    : "";
   const inner = `<section class="yarns">
-<div><h2><span class="chip" style="background:${a.bg}"></span>Warp, in ${a.name}: ${esc(p.warpLabel)}</h2>${text(p.warp)}</div>
-<div><h2><span class="chip" style="background:${b.bg}"></span>Weft, in ${b.name}: ${esc(p.weftLabel)}</h2>${text(p.weft)}</div>
-</section>`;
+<div><h2><span class="chip" style="background:${a.bg}"></span>Warp, in ${a.name}: ${esc(p.warpLabel)}</h2>${text(p.warp, "warp")}</div>
+<div><h2><span class="chip" style="background:${b.bg}"></span>Weft, in ${b.name}: ${esc(p.weftLabel)}</h2>${text(p.weft, "weft")}</div>
+${mend}</section>`;
   return Array.isArray(p.warp) ? `<details class="unwoven"><summary>Unweave it: both texts, thread by thread</summary>${inner}</details>` : inner;
 }
 
@@ -76,7 +95,7 @@ function piecePage(p, n) {
   const buttons = choices
     .map((s) => `<button type="button" data-structure="${s}" aria-pressed="${s === p.structure}">${STRUCTURES[s].name}</button>`)
     .join("");
-  const data = { ...p, warp: p.warp, weft: p.weft };
+  const data = { ...p, darn: p.darn && { ...p.darn, dyeName: DYES[p.darn.dye].name } };
   const prev = PIECES[n - 1];
   const next = PIECES[n + 1];
   const body = `
@@ -86,9 +105,9 @@ function piecePage(p, n) {
 <div class="loom piece ${p.figure ? "far" : "near"}">
 <div class="faceline"><p class="note face" aria-live="polite">Front</p><button type="button" class="distance" aria-pressed="${!!p.figure}">Step back</button></div>
 <div class="beam">${cloth(p, p.structure, ' tabindex="0" aria-label="The woven cloth: two texts crossed. Arrow keys lift threads. Both texts are given in full below."')}</div>
-<p class="reading" aria-live="polite"><span class="which">${p.W} warp threads, ${p.H} weft picks</span>Point at a crossing, or tap it, to lift the thread on top and read everything it carries, the hidden part too. <span class="hint">${p.figure ? "Stepped back: only the two colours show. Press Step back again to come close and read the letters." : "Step back to see the pattern the two colours make."}</span></p>
+<p class="reading" aria-live="polite"><span class="which">${p.W} warp threads, ${p.H} weft picks</span>Point at a crossing, or tap it, to lift the thread on top and read everything it carries, the hidden part too.${p.darn ? ` The ${esc(DYES[p.darn.dye].name)} patch is a darn: point at it to read the mend whole.` : ""} <span class="hint">${p.figure ? "Stepped back: only the two colours show. Press Step back again to come close and read the letters." : "Step back to see the pattern the two colours make."}</span></p>
 </div>
-<div class="controls" role="group" aria-label="Structure">${buttons}<button type="button" class="turn" aria-pressed="false">Turn it over</button></div>
+<div class="controls" role="group" aria-label="Structure">${buttons}${p.darn ? '<button type="button" class="unpick" aria-pressed="false">Unpick the darn</button>' : ""}<button type="button" class="turn" aria-pressed="false">Turn it over</button></div>
 <p class="note about" aria-live="polite">${esc(STRUCTURES[p.structure].note)}</p>
 ${yarns(p, a, b)}
 <section class="after"><h2>On the structure</h2><p>${esc(p.afterword)}</p>${p.source ? `<p class="src">${p.source}</p>` : ""}</section>
@@ -192,6 +211,16 @@ for (const p of PIECES) {
   for (const [r, c] of p.meets || []) {
     const a = warpChar(spin(p, "warp"), p.H, r, c), b = weftChar(spin(p, "weft"), p.W, r, c);
     if (a !== b || a === " ") throw new Error(`${p.slug}: meeting at pick ${r}, thread ${c} carries "${a}" and "${b}"`);
+  }
+  // A darn must sit inside the cloth, and its yarn must have a line for each
+  // laid strand and each pass.
+  if (p.darn) {
+    const d = p.darn;
+    if (!DYES[d.dye]) throw new Error(`${p.slug}: unknown darn dye ${d.dye}`);
+    if (d.r < 0 || d.c < 0 || d.r + d.h > p.H || d.c + d.w > p.W) throw new Error(`${p.slug}: darn outside the cloth`);
+    if (d.lines.length !== d.w + d.h) throw new Error(`${p.slug}: ${d.lines.length} darn lines for ${d.w} laid strands and ${d.h} passes`);
+    darnLines(d);
+    for (const [r, c] of p.meets || []) if (inDarn(p, r, c)) throw new Error(`${p.slug}: meeting inside the darn`);
   }
   weave(p, p.structure);
 }
