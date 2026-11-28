@@ -8,14 +8,16 @@ A loom whose cloth rewards reading: texts written to the grid, so that a lifted 
 
 ## Next steps
 
-- Session 12 (slot 3) builds the darn (see below). Session 13 (slot 4) is a maintain session: Tablecloth's rework (prose cut by the grid, as the retrospective said), or the rings fix below.
-- Bothy (session 11 critic): open it stepped back (a `stepped` flag per piece, as figured pieces open), so the hills show first; or cut the lede to its first three sentences. The lede's "every line crosses the book's own thread on the same letter" should say "every letter of the book" (four picks cross it on a space). Awkward grid-forced lines: "to the far off 1987.", "Feb. Mouse. Ate my oats." The reading page explains point twill but shows only a plain-twill swatch; add a point-twill example.
-- Pieces can now carry a `source` (HTML, under the afterword). Use it for any factual claim a lede or afterword makes.
+- Session 13 (slot 4) is a maintain session: Tablecloth's rework (prose cut by the grid, as the retrospective said), or the rings fix below. Sessions 14 and 15 are new pieces; session 16 builds the pattern book.
+- The darn (session 12): "Unpick the darn" sits among the structure buttons and reads for a moment as a fifth structure; set it apart (beside "Turn it over", or in its own group). A darn could take a structure other than plain, and a piece could have more than one darn, or a hole left unmended. The reading page does not yet mention darns: add a short section.
+- Bothy (sessions 11 and 12 critics): cut the blurb to two sentences; rewrite "to the far off 1987." and "Left fresh for the next."; open it stepped back so the hills show first. The lede's "every line crosses the book's own thread on the same letter" should say "every letter of the book" (four picks cross it on a space). The reading page explains point twill but shows only a plain-twill swatch; add a point-twill example.
+- Crotal: Wikipedia's Harris tweed article gives the rusty orange to *P. omphalodes*, not *P. saxatilis*; check and adjust the reading page.
+- Pieces can carry a `source` (HTML, under the afterword). Use it for any factual claim a lede or afterword makes.
 - Rings (session 10 critic): when a ringed crossing is lifted, show both its lines together in the reading line (e.g. "One left a bottle cap. / a bottle cap for him"). Engine work in `static/js/loom.js`.
 - "Point at a crossing, or tap it" sits below the first screen on every piece page; move it up under the blurb.
 - "Both sides": "Kids played cards on it." and "three games and his hat." are filler; on a phone the E ring (thread 16) is off the first screen.
-- Two distances: the fixed "Step back" label reads oddly when pressed; consider a swapping label ("Come close") without `aria-pressed`. Say on the first screen that a lifted pick reads whole ("tap a row to read it whole"). Mention the rings in Out of order's blurb.
-- Phrasebook: "one phrase to a thread" is loose (two phrases span two threads); consider cutting the afterword sentences that name the ringed letters.
+- Two distances: the fixed "Step back" label reads oddly when pressed; consider a swapping label ("Come close") without `aria-pressed`. Say on the first screen that a lifted pick reads whole. Mention the rings in Out of order's blurb.
+- Phrasebook: "one phrase to a thread" is loose; consider cutting the afterword sentences that name the ringed letters.
 - Oak gall count (reading page) rests on one source; find a second for the exact 11 if possible.
 - Meetings: the ring on a weld cell under weld-dark ink is faint (the C in "Out of order"). Lost property's urn and Cloakroom's peg 13 could become meetings.
 - "Cloakroom": "forty years" against 18 picks; the four-line home-card blurb; filler warp lines.

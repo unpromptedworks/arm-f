@@ -131,6 +131,25 @@ h1 {
 /* A meeting: both threads carry the same character here, so it shows on
    both faces. Ringed in the colour of whichever text is on top. */
 .cloth i.m { box-shadow: inset 0 0 0 0.16em currentColor; font-weight: 700; }
+/* A darn: a third yarn in its own dye, laid down the hole and woven across
+   it. Where the woven pass is on top (x) the yarn catches more light. */
+.cloth i.d { background: var(--c); color: var(--cf); font-weight: 650; }
+.cloth i.d.x { background: color-mix(in srgb, var(--c) 90%, #fff); }
+/* Unpicked: the hole shows the ground through, and the broken ends (thrums)
+   hang into it, warp from above and below, weft from the sides. */
+.cloth i { position: relative; }
+.cloth i.h { background: color-mix(in srgb, var(--ground) 78%, #000); cursor: default; }
+.cloth i.tn::before, .cloth i.ts::before, .cloth i.tw::after, .cloth i.te::after { content: ""; position: absolute; box-shadow: 0 0 0 1px #0004; }
+.cloth i.tn::before, .cloth i.ts::before { left: 38%; width: 24%; height: 46%; background: var(--a); }
+.cloth i.tn::before { top: 0; border-radius: 0 0 40% 40%; }
+.cloth i.ts::before { bottom: 0; border-radius: 40% 40% 0 0; }
+.cloth i.tw::after, .cloth i.te::after { top: 38%; height: 24%; width: 46%; background: var(--b); }
+.cloth i.tw::after { left: 0; border-radius: 0 40% 40% 0; }
+.cloth i.te::after { right: 0; border-radius: 40% 0 0 40%; }
+.reading s.lost, .yarns .lost { opacity: 0.5; letter-spacing: 0; }
+.yarns li.turnto { margin-top: 0.6em; }
+.yarns .note { margin-top: 0.6rem; font-size: 0.8rem; }
+
 /* A lifted thread: everything else falls back, and the lifted thread's
    hidden characters come up through the cloth, ringed. */
 .cloth.lifting i { opacity: 0.28; }
